@@ -27,4 +27,5 @@ if __name__ == "__main__":
     cur.execute("""INSERT INTO test (tid, name) VALUES (33, 'wut')""")
 
     show_table(cur, "test")  
-
+    # commit
+    #conn.commit()
