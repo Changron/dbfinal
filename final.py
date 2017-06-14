@@ -1,5 +1,14 @@
 import psycopg2
 
+def show_table(cursor, table_name):
+    SQL = """SELECT * from """ + table_name
+    cur.execute(SQL)
+    # fetch [variable?]
+    rows = cur.fetchall()
+    print "\nShow me the databases:"
+    for row in rows:
+        print "   ", row
+
 # https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
 if __name__ == "__main__":
     conn = None
@@ -12,10 +21,10 @@ if __name__ == "__main__":
     # cursor to work with
     cur = conn.cursor()
     # execute query
-    cur.execute("""SELECT * from test""")
-    # fetch [variable?]
-    rows = cur.fetchall()
-    print "\nShow me the databases:"
-    for row in rows:
-        print "   ", row
+    show_table(cur, "test")    
+
+    # must use single quote
+    cur.execute("""INSERT INTO test (tid, name) VALUES (33, 'wut')""")
+
+    show_table(cur, "test")  
 
