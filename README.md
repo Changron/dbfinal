@@ -1,1 +1,3 @@
 # dbfinal
+dependency:
+psycopg2 
