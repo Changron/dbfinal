@@ -9,6 +9,10 @@ def show_table(cursor, table_name):
     for row in rows:
         print "   ", row
 
+# called when new accident warning event is detected
+def create_accident_event():
+    print('create')
+
 # https://wiki.postgresql.org/wiki/Psycopg2_Tutorial
 if __name__ == "__main__":
     conn = None
@@ -20,12 +24,29 @@ if __name__ == "__main__":
 
     # cursor to work with
     cur = conn.cursor()
-    # execute query
-    show_table(cur, "test")    
+    
+    view_name = "testview"
+    view_sql = "SELECT COUNT(*) FROM " + view_name
+    cur.execute(view_sql)
+    # initial rows
+    # first row, first column
+    # to get initial row count
+    row_count = cur.fetchall()[0][0]
 
-    # must use single quote
-    cur.execute("""INSERT INTO test (tid, name) VALUES (33, 'wut')""")
+    # infinite loop to check if new row is created in accident warning event
+    while True:
+        cur.execute(view_sql)
+        rows = cur.fetchall()
+        # if same as previous loop, do nothing
+        if rows[0][0] == row_count:
+            pass        
+        # do stuff if new row detected
+        else:
+            row_count = rows[0][0]
+            print(rows[0][0])
+            print(row_count)
+            create_accident_event()
+            conn.commit()
 
-    show_table(cur, "test")  
     # commit
     #conn.commit()
