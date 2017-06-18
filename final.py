@@ -26,6 +26,14 @@ def create_accident_event(cur, remote_cur):
     # road_section_name
     for row in rows:
         print "   ", row
+        insert_loc_sql = "INSERT INTO Location(Latitude, Longitude) VALUES (" +\
+                          str(row[2]) + "," +\
+                          str(row[3]) + ")" +\
+                          "RETURNING Location_id;"
+        
+        cur.execute(insert_loc_sql)                
+        NewLocationId = cur.fetchone()[0]
+
         insert_row_sql = "INSERT INTO accident_event VALUES (" +\
                             str(row[0]) + "," +\
                             "'" + str(row[4]) + "'" + "," +\
@@ -34,9 +42,20 @@ def create_accident_event(cur, remote_cur):
                             "'" + str(row[8]) + "'" + "," +\
                             "'" + str(row[9]) + "'" + "," +\
                             "'" + str(row[6]) + "'" + "," +\
-                            str(row[7]) + ")"
+                            str(row[7]) + ")" +\
+                            "RETURNING accident_id;"
                             # actuall location null
+
         cur.execute(insert_row_sql)
+        NewEventId = cur.fetchone()[0]
+
+        insert_hap_sql = "INSERT INTO Detected_at(Accident_event_id, Location_id) VALUES (" +\
+                          str(NewEventId) + "," +\
+                          str(NewLocationId) + ")" +\
+                          "RETURNING Location_id;"
+
+        cur.execute(insert_hap_sql)
+
 
     show_table(cur, 'accident_event')
 
